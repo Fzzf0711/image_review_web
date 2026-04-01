@@ -12,7 +12,11 @@
           >
             <template #prepend>📂 数据目录</template>
             <template #append>
-              <el-button :icon="FolderOpened" :loading="isLoading" @click="loadRemoteImages" class="primary-append-btn"
+              <el-button
+                :icon="FolderOpened"
+                :loading="isLoading"
+                @click="loadRemoteImages"
+                class="primary-append-btn"
                 >加载数据</el-button
               >
             </template>
@@ -20,7 +24,7 @@
 
           <div
             class="dir-navigator"
-            v-if="realRemoteDirList.length > 0 || workDirPath !== BASE_ROOT"
+            v-if="(realRemoteDirList && realRemoteDirList.length > 0) || workDirPath !== BASE_ROOT"
           >
             <el-button
               v-if="workDirPath !== BASE_ROOT"
@@ -1035,6 +1039,7 @@ import { ElMessage } from 'element-plus'
 import { storeToRefs } from 'pinia'
 
 import { BASE_ROOT, API } from '@/config'
+import { MERGED_FIELD_SCHEMA, STYLE_GROUP_1_KEYS, STYLE_GROUP_2_KEYS } from '@/config/schema'
 import { extractPoseCode, buildImageUrl, debounce, downloadBlob } from '@/utils'
 import { RecordIndex } from '@/utils/recordIndex'
 import { useGlobalStore } from '@/stores/global'
@@ -1054,75 +1059,13 @@ const allRecords = ref<any[]>([])
 // 🚀 性能优化：使用 Map 索引快速查找记录
 const recordsIndex = new RecordIndex()
 
-// ==================== Field schema (unique combined pose + prompt fields) ====================
-const fieldSchema = [
-  { key: 'pose_name', label: '姿态名称' },
-  { key: 'framing', label: '景别' },
-  { key: 'camera_angle', label: '角度' },
-  { key: 'scene_theme', label: '场景主题' },
-  { key: 'gender', label: '性别' },
-  { key: 'age', label: '年龄' },
-  { key: 'element_1', label: '元素1' },
-  { key: 'element_2', label: '元素2' },
-  { key: 'element_3', label: '元素3' },
-  { key: 'special_lighting', label: '特殊光线' },
-  { key: 'character_prop_1', label: '人物陪体1' },
-  { key: 'character_prop_2', label: '人物陪体2' },
-  { key: 'scene_prop_1', label: '场景陪体1' },
-  { key: 'scene_prop_2', label: '场景陪体2' },
-  { key: 'body_type_fit', label: '适配身材' },
-  { key: 'difficulty_level', label: '难易程度' },
-  { key: 'style_landmark', label: '地标' },
-  { key: 'priority', label: '优先级' },
-  { key: 'owner_1', label: '责1' },
-  { key: 'owner_2', label: '责2' },
-  { key: 'owner_3', label: '责3' },
-  { key: 'style_ins', label: 'ins风' },
-  { key: 'style_seductive', label: '钓系姐感' },
-  { key: 'style_relaxed', label: '松弛感' },
-  { key: 'style_hk', label: '港片风' },
-  { key: 'style_rich', label: '贵气千金' },
-  { key: 'style_faceless', label: '不露脸氛围' },
-  { key: 'style_tall_thin', label: '显高显瘦' },
-  { key: 'style_vitality', label: '生命力/活人感' },
-  { key: 'style_introvert', label: 'i人出片姿势' },
-  { key: 'style_aesthetic_food', label: '漂亮饭' },
-  { key: 'style_polaroid', label: '拍立得' },
-  { key: 'style_ccd', label: 'CCD' },
-  { key: 'style_anniversary', label: '纪念日打卡' },
-  { key: 'style_birthday', label: '生日打卡' },
-  { key: 'style_ancient', label: '古风' },
-  { key: 'pose_remarks', label: '姿态备注' },
-  { key: 'generated_prompt', label: '生成引导词' },
-  { key: 'modified_prompt', label: '修改引导词' },
-  { key: 'modifier', label: '修改人' },
-  { key: 'check_owner', label: 'Check责任人' },
-  { key: 'remarks', label: '引导词备注' },
-]
-
 // ==================== Style groups ====================
-const styleGroup1Keys = [
-  'style_ins',
-  'style_seductive',
-  'style_relaxed',
-  'style_hk',
-  'style_rich',
-  'style_faceless',
-  'style_tall_thin',
-  'style_vitality',
-]
-const styleGroup2Keys = [
-  'style_introvert',
-  'style_aesthetic_food',
-  'style_polaroid',
-  'style_ccd',
-  'style_anniversary',
-  'style_birthday',
-  'style_ancient',
-]
-
-const styleGroup1 = computed(() => fieldSchema.filter((f) => styleGroup1Keys.includes(f.key)))
-const styleGroup2 = computed(() => fieldSchema.filter((f) => styleGroup2Keys.includes(f.key)))
+const styleGroup1 = computed(() =>
+  MERGED_FIELD_SCHEMA.filter((f) => STYLE_GROUP_1_KEYS.includes(f.key)),
+)
+const styleGroup2 = computed(() =>
+  MERGED_FIELD_SCHEMA.filter((f) => STYLE_GROUP_2_KEYS.includes(f.key)),
+)
 
 // ==================== Filters (composable) ====================
 const displayRecords = computed(() => allRecords.value.filter((r) => r._imageUrl))
@@ -1136,7 +1079,8 @@ const {
 } = useFilters(displayRecords)
 
 // 🚀 性能优化：使用 optionsDict 缓存所有选项，避免模板中重复计算
-const { optionsDict, getOptions } = useOptionsCache(displayRecords, fieldSchema)
+
+const { optionsDict, getOptions } = useOptionsCache(displayRecords, MERGED_FIELD_SCHEMA)
 const getUniqueValues = (field: string) => baseGetUniqueValues(field)
 
 // ==================== Pagination (composable) ====================
@@ -1153,12 +1097,14 @@ onUnmounted(() => window.removeEventListener('keydown', handleGlobalKeydown))
 const fetchMergedData = async () => {
   isLoading.value = true
   try {
-    const [poseRes, promptRes] = await Promise.all([
-      fetch(API.POSE_LIST).then((r) => r.json()),
-      fetch(API.PROMPT_LIST)
-        .then((r) => r.json())
-        .catch(() => ({ code: 200, data: [] })),
-    ])
+    const poseRes = await fetch(API.POSE_LIST).then((r) => r.json())
+    const promptRes = await fetch(API.PROMPT_LIST)
+      .then((r) => r.json())
+      .catch((e) => {
+        console.error('获取引导词数据失败:', e)
+        // 即使失败也返回空数组，避免阻断整个流程
+        return { code: 200, data: [] }
+      })
 
     const promptMap = new Map()
     if (promptRes.code === 200) {

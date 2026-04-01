@@ -39,7 +39,7 @@
 - 引导词字数限制（30字）+ 结尾标点校验
 - 修改人/Check人联动自动设置双检状态
 - 快捷键保存（Ctrl/Shift + Enter）
-- **未保存修改确认**：退出前检测并提示
+- **未保存保存确认**：退出前检测并提示
 
 ### 4. 标签数据看板 (`/dashboard`)
 - 数据表格（自定义显示列、分页、行内编辑抽屉）
@@ -58,7 +58,9 @@
 
 ```
 src/
-├── config/index.ts              # 全局常量、API 端点、字段 Schema、图表色板
+├── config/
+│   ├── index.ts              # 全局常量、API 端点、图表色板
+│   └── schema.ts             # 字段 Schema、风格分组、可见列配置
 ├── types/index.ts                # TypeScript 接口定义
 ├── utils/
 │   ├── index.ts                  # 工具函数（extractPoseCode, formatTime, debounce 等）
@@ -71,6 +73,9 @@ src/
 │   ├── useFilters.ts             # 多条件筛选逻辑（带缓存优化）
 │   ├── usePagination.ts          # 分页逻辑
 │   └── useOptionsCache.ts        # 选项缓存（性能优化）
+├── components/
+│   ├── FocusEditorDialog.vue     # 全屏编辑对话框组件
+│   └── DataActionBar.vue         # 数据操作栏组件
 ├── assets/styles/
 │   ├── base.css                  # 公共原子类（dense-grid、seamless-select 等）
 │   └── dark.css                 # 暗黑模式全局样式
@@ -88,6 +93,10 @@ src/
 
 ## 架构设计
 
+### 组件化设计
+- **FocusEditorDialog**：可复用的全屏编辑对话框组件，支持自定义标题、图标、进度显示
+- **DataActionBar**：可复用的数据操作栏组件，包含目录输入和版本选择
+
 ### 状态管理
 使用 Pinia `useGlobalStore` 管理跨页面共享状态：
 - `currentVersion` — 当前选择的数据版本号
@@ -98,6 +107,11 @@ src/
 - `fetchPoseVersions()` / `fetchPromptVersions()` — 拉取版本列表
 
 用户在任意页面切换版本或目录后，跳转到其他页面时上下文自动保持。
+
+### Schema 配置统一管理
+- `schema.ts`：集中管理所有字段 Schema、风格分组、默认可见列配置
+- 避免在各 Vue 文件中重复定义的配置常量
+- `index.ts`：从 `schema.ts` 重新导出，保持向后兼容
 
 ### HTTP 请求封装
 - 统一使用 Axios 进行网络请求

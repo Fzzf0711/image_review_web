@@ -440,10 +440,10 @@ import type { ECharts, EChartsCoreOption } from '@/utils/echarts'
 import {
   BASE_ROOT,
   API,
-  POSE_FIELD_SCHEMA,
   DEFAULT_POSE_VISIBLE_COLUMNS,
   CHART_COLOR_PALETTE,
 } from '@/config'
+import { POSE_FIELD_SCHEMA } from '@/config/schema'
 import { extractPoseCode, buildImageUrl } from '@/utils'
 import { useFilters } from '@/composables/useFilters'
 import { useGlobalStore } from '@/stores/global'

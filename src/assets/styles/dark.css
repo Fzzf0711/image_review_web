@@ -1,117 +1,117 @@
 /* ==================== 暗黑模式全局样式 ==================== */
 
 /* 工具栏样式 */
-暗.dark .top-toolbar,
-暗.dark .filter-toolbar,
-暗.dark .sidebar-panel,
-暗.dark .main-toolbar,
-暗.dark .pagination-container {
+html.dark .top-toolbar,
+html.dark .filter-toolbar,
+html.dark .sidebar-panel,
+html.dark .main-toolbar,
+html.dark .pagination-container {
   background: var(--el-bg-color);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
 }
 
 /* 边框颜色 */
-暗.dark .sidebar-header,
-暗.dark .attribute-block,
-暗.dark .feishu-panel,
-暗.dark .meta-info-row {
+html.dark .sidebar-header,
+html.dark .attribute-block,
+html.dark .feishu-panel,
+html.dark .meta-info-row {
   border-bottom-color: var(--el-border-color);
   border-color: var(--el-border-color);
 }
 
 /* 菜单项悬停 */
-暗.dark .premium-menu-item:hover {
+html.dark .premium-menu-item:hover {
   background-color: var(--el-fill-color);
 }
 
-暗.dark .file-menu .el-menu-item.is-active {
+html.dark .file-menu .el-menu-item.is-active {
   background-color: rgba(51, 112, 255, 0.1);
 }
 
 /* 预览区域 */
-暗.dark .viewer-area {
+html.dark .viewer-area {
   background-color: #1a1a1a;
 }
 
 /* 信息胶囊 */
-暗.dark .info-capsule {
+html.dark .info-capsule {
   background-color: var(--el-fill-color);
   color: var(--el-text-color-regular);
 }
 
 /* 卡片样式 */
-暗.dark .annotation-card {
+html.dark .annotation-card {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
-暗.dark .annotation-card:hover {
+html.dark .annotation-card:hover {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
   border-color: rgba(51, 112, 255, 0.3);
 }
 
-暗.dark .prompt-preview,
-暗.dark .card-image-section {
+html.dark .prompt-preview,
+html.dark .card-image-section {
   background: var(--el-fill-color);
   border-color: var(--el-border-color);
 }
 
-暗.dark .pose-code-badge {
+html.dark .pose-code-badge {
   background-color: rgba(0, 0, 0, 0.7);
   color: #e5e6eb;
 }
 
 /* 空状态 */
-暗.dark .empty-placeholder {
+html.dark .empty-placeholder {
   background: var(--el-bg-color);
 }
 
 /* 焦点模式 */
-暗.dark .focus-right {
+html.dark .focus-right {
   background-color: var(--el-bg-color);
 }
 
-暗.dark .attribute-block {
+html.dark .attribute-block {
   background: var(--el-fill-color);
   border-color: var(--el-border-color);
 }
 
-暗.dark .dense-item {
+html.dark .dense-item {
   background: var(--el-bg-color);
   border-color: var(--el-border-color);
 }
 
 /* 网格卡片悬停效果 */
-暗.dark .annotation-card:hover .thumbnail {
+html.dark .annotation-card:hover .thumbnail {
   filter: blur(2px) brightness(0.6);
 }
 
 /* 搜索输入框 */
-暗.dark :deep(.search-input .el-input__wrapper) {
+html.dark :deep(.search-input .el-input__wrapper) {
   background-color: var(--el-fill-color);
 }
 
-暗.dark :deep(.search-input .el-input__wrapper.is-focus) {
+html.dark :deep(.search-input .el-input__wrapper.is-focus) {
   background-color: var(--el-bg-color);
 }
 
 /* 只读输入框 */
-暗.dark .readonly-input :deep(.el-textarea__inner) {
+html.dark .readonly-input :deep(.el-textarea__inner) {
   background-color: var(--el-fill-color) !important;
   color: var(--el-text-color-regular) !important;
 }
 
 /* 无缝选择器 */
-暗.dark .seamless-select :deep(.el-select__wrapper) {
+html.dark .seamless-select :deep(.el-select__wrapper) {
   background-color: transparent !important;
 }
 
-暗.dark .seamless-input :deep(.el-textarea__inner) {
+html.dark .seamless-input :deep(.el-textarea__inner) {
   background-color: var(--el-bg-color);
   color: var(--el-text-color-regular);
   border-color: var(--el-border-color);
 }
 
-暗.dark .seamless-input :deep(.el-textarea__inner):focus {
+html.dark .seamless-input :deep(.el-textarea__inner):focus {
   border-color: var(--el-color-primary);
   box-shadow: 0 0 0 2px var(--el-color-primary-light-9) !important;
 }
